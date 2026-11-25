@@ -6,6 +6,8 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   // Web internal sepenuhnya dinamis (setiap halaman bergantung pada sesi pengurus).
   cacheComponents: false,
+  // Hanya untuk `next dev`: izinkan 127.0.0.1 agar dua sesi (localhost dan 127.0.0.1) bisa diuji berdampingan.
+  allowedDevOrigins: ["127.0.0.1"],
   experimental: {
     serverActions: { bodySizeLimit: "6mb" },
   },

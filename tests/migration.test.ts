@@ -123,6 +123,8 @@ describe("migration Supabase internal", () => {
   it("log aktivitas hanya bisa ditambah dan hanya dibaca direktur", async () => {
     await as("sekretaris", `insert into activity_logs (actor_id, actor_name, action, entity) values ('${ids.sekretaris}', 'sekretaris', 'record.save', 'record')`);
     await expect(as("sekretaris", `insert into activity_logs (actor_id, actor_name, action, entity) values ('${ids.direktur}', 'palsu', 'x', 'x')`)).rejects.toThrow(/row-level security/);
+    // Penulis log tidak boleh membaca log, jadi INSERT ... RETURNING ditolak: aplikasi wajib memakai db.append().
+    await expect(as("sekretaris", `insert into activity_logs (actor_id, actor_name, action, entity) values ('${ids.sekretaris}', 'sekretaris', 'x', 'x') returning id`)).rejects.toThrow(/row-level security/);
     expect(await as("sekretaris", "select id from activity_logs")).toHaveLength(0);
     expect(await as("direktur", "select id from activity_logs")).toHaveLength(1);
     await expect(as("direktur", "delete from activity_logs")).rejects.toThrow(/permission denied/);

@@ -84,7 +84,7 @@ export function createAction<S extends z.ZodType, T>(opts: Options<S>, handler: 
       const data = await handler(parsed.data, { user, db });
       const entityId = data && typeof data === "object" && "id" in data ? String((data as { id: unknown }).id) : null;
       try {
-        if (!opts.quiet?.(data)) await db.insert("activity_logs", {
+        if (!opts.quiet?.(data)) await db.append("activity_logs", {
           actor_id: user.id,
           actor_name: user.full_name,
           action: opts.name,
@@ -92,8 +92,9 @@ export function createAction<S extends z.ZodType, T>(opts: Options<S>, handler: 
           entity_id: entityId,
           summary: opts.summary?.(parsed.data) ?? null,
         });
-      } catch {
-        // Log tidak boleh menggagalkan aksi yang sudah berhasil.
+      } catch (logError) {
+        // Log tidak boleh menggagalkan aksi yang sudah berhasil, tetapi kegagalannya harus terlihat di log server.
+        console.error(`[action ${opts.name}] log aktivitas gagal:`, logError instanceof Error ? logError.message : logError);
       }
       revalidatePath("/", "layout");
       return { ok: true, data };

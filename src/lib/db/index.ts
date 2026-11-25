@@ -17,6 +17,12 @@ export interface Db {
   get<K extends TableName>(table: K, id: string): Promise<Tables[K] | null>;
   insert<K extends TableName>(table: K, row: NewRow<K>): Promise<Tables[K]>;
   insertMany<K extends TableName>(table: K, rows: NewRow<K>[]): Promise<Tables[K][]>;
+  /**
+   * Sisipkan tanpa membaca balik barisnya. Wajib untuk tabel yang boleh ditulis tetapi tidak boleh
+   * dibaca penulisnya (log aktivitas: hanya direktur yang boleh membaca), karena INSERT ... RETURNING
+   * ikut menguji kebijakan SELECT dan akan ditolak RLS.
+   */
+  append<K extends TableName>(table: K, row: NewRow<K>): Promise<void>;
   update<K extends TableName>(table: K, id: string, patch: Partial<Tables[K]>): Promise<Tables[K]>;
   remove<K extends TableName>(table: K, id: string): Promise<void>;
 }
@@ -72,6 +78,9 @@ const demoDb: Db = {
     (data[table] as unknown[]).push(...created);
     persist(data);
     return created as never;
+  },
+  async append(table, row) {
+    await this.insertMany(table, [row]);
   },
   async update(table, id, patch) {
     const data = loadDemo();
@@ -141,6 +150,11 @@ function makeSupabaseDb(client: () => Promise<SupabaseClient> | SupabaseClient):
       const { data, error } = await sb.from(table).insert(rows as never).select("*");
       fail(error);
       return (data ?? []) as never;
+    },
+    async append(table, row) {
+      const sb = await client();
+      const { error } = await sb.from(table).insert(row as never);
+      fail(error);
     },
     async update(table, id, patch) {
       const sb = await client();
