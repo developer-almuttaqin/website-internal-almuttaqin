@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+/* Token desain mengikuti web publik (DESIGN GUIDELINES - ACC): cream dominan, maroon untuk judul,
+   tombol, dan ornamen, coklat tua lembut untuk teks isi, emas sebagai aksen di area gelap.
+   Komponen tidak memakai hex langsung. */
+:root {
+  --background: #fff5e6;
+  --foreground: #4b3832;
+  --heading: #3a2620;
+  --card: #fffbf4;
+  --surface: #f8ead4;
+  --surface-2: #f5e4ca;
+  --border: #ecd9bd;
+  --input: #e6d0b0;
+  --muted-foreground: #765d53;
+  --primary: #800000;
+  --primary-hover: #660000;
+  --primary-foreground: #fff5e6;
+  --primary-soft: #f7e0d3;
+  --accent-text: #800000;
+  --gold: #b8862b;
+  --ornament: rgb(128 0 0 / 0.5);
+  --hero: #2a0707;
+  --hero-2: #5a0c0c;
+  --hero-foreground: #fff5e6;
+  --hero-muted: #ead6c6;
+  --hero-accent: #f3cf8a;
+  --success: #15803d;
+  --warning: #b45309;
+  --danger: #b91c1c;
+  --elev-card: 0 1px 2px rgb(75 56 50 / 0.05), 0 10px 28px -14px rgb(75 56 50 / 0.22);
+  --elev-float: 0 18px 40px -18px rgb(75 56 50 / 0.45);
+  --pattern-star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23fff5e6' stroke-opacity='0.08' stroke-width='1'%3E%3Crect x='24' y='24' width='48' height='48'/%3E%3Crect x='24' y='24' width='48' height='48' transform='rotate(45 48 48)'/%3E%3Cpath d='M0 48h24M72 48h24M48 0v24M48 72v24'/%3E%3Ccircle cx='48' cy='48' r='6'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+:root[data-theme="dark"] {
+  --background: #140b09;
+  --foreground: #efe2d2;
+  --heading: #fff5e6;
+  --card: #1d1210;
+  --surface: #221613;
+  --surface-2: #2b1c18;
+  --border: #33231e;
+  --input: #3a2a24;
+  --muted-foreground: #bea89a;
+  --primary: #9e1b1b;
+  --primary-hover: #b82626;
+  --primary-soft: #3a1714;
+  --accent-text: #f0a093;
+  --gold: #e2b65c;
+  --ornament: rgb(240 160 147 / 0.35);
+  --hero: #120504;
+  --hero-2: #3a0909;
+  --hero-muted: #dcc6b8;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --elev-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --elev-float: 0 18px 40px -18px rgb(0 0 0 / 0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #140b09;
+    --foreground: #efe2d2;
+    --heading: #fff5e6;
+    --card: #1d1210;
+    --surface: #221613;
+    --surface-2: #2b1c18;
+    --border: #33231e;
+    --input: #3a2a24;
+    --muted-foreground: #bea89a;
+    --primary: #9e1b1b;
+    --primary-hover: #b82626;
+    --primary-soft: #3a1714;
+    --accent-text: #f0a093;
+    --gold: #e2b65c;
+    --ornament: rgb(240 160 147 / 0.35);
+    --hero: #120504;
+    --hero-2: #3a0909;
+    --hero-muted: #dcc6b8;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --elev-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+    --elev-float: 0 18px 40px -18px rgb(0 0 0 / 0.7);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-heading: var(--heading);
+  --color-input: var(--input);
+  --color-gold: var(--gold);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-muted: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent-text);
+  --color-hero: var(--hero);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-hero-muted: var(--hero-muted);
+  --color-hero-accent: var(--hero-accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --shadow-card: var(--elev-card);
+  --shadow-float: var(--elev-float);
+  --font-sans: var(--font-jakarta), var(--font-noto-jp), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+:lang(ja) body {
+  line-break: strict;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+h1,
+h2 {
+  color: var(--heading);
+}
+
+/* Area gelap berpola bintang (hero web publik): gradasi maroon dengan ornamen sangat halus. */
+.pattern-hero {
+  color: var(--hero-foreground);
+  background-color: var(--hero);
+  background-image: var(--pattern-star), radial-gradient(120% 90% at 85% 10%, var(--hero-2) 0%, var(--hero) 62%);
+  background-size:
+    96px 96px,
+    100% 100%;
+}
+
+.pattern-hero h1,
+.pattern-hero h2 {
+  color: inherit;
+}
+
+/* Garis ornamen tipis maroon transparan, pemisah khas web publik. */
+.ornament-line {
+  height: 1px;
+  background-image: linear-gradient(90deg, transparent, var(--ornament) 20%, var(--ornament) 80%, transparent);
+}
+
+::selection {
+  background: color-mix(in oklab, var(--primary) 20%, transparent);
+}
+
+/* Logo dua versi: maroon di mode terang, cream di mode gelap (mengikuti tema, bukan hanya sistem). */
+.logo-on-dark {
+  display: none;
+}
+:root[data-theme="dark"] .logo-on-light {
+  display: none;
+}
+:root[data-theme="dark"] .logo-on-dark {
+  display: block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .logo-on-light {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .logo-on-dark {
+    display: block;
+  }
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+  .print-page {
+    box-shadow: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+}
