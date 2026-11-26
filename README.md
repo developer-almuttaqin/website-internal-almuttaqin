@@ -60,8 +60,10 @@ Bila kunci web publik dikosongkan, menu Web Publik menampilkan petunjuk penyambu
 
 ### Deploy di Vercel
 
-Proyek Vercel `website-internal-almuttaqin`; variabel lingkungan diimpor dari berkas `.env` yang sama
-dengan `.env.local`. Wilayah fungsi di `vercel.json` harus sama dengan wilayah proyek Supabase internal
+Proyek Vercel `website-internal-almuttaqin`, tayang di `https://internal-almuttaqin.dekatlokal.com`
+(cadangan: `website-internal-almuttaqin.vercel.app`). DNS `dekatlokal.com` dikelola di Cloudflare: catatan
+CNAME `internal-almuttaqin` menunjuk ke Vercel dengan proxy dimatikan (DNS only). Variabel lingkungan
+diimpor dari berkas `.env` yang sama dengan `.env.local`. Wilayah fungsi di `vercel.json` harus sama dengan wilayah proyek Supabase internal
 (saat ini Sydney, `syd1`): setiap halaman melakukan beberapa panggilan database berurutan, jadi jarak
 server ke database jauh lebih menentukan kecepatan daripada jarak pengguna ke server. Bila proyek
 Supabase internal dipindah ke wilayah lain, ubah `regions` ikut menyesuaikan.
