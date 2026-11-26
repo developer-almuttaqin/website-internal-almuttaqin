@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   // Hanya untuk `next dev`: izinkan 127.0.0.1 agar dua sesi (localhost dan 127.0.0.1) bisa diuji berdampingan.
   allowedDevOrigins: ["127.0.0.1"],
   experimental: {
-    serverActions: { bodySizeLimit: "6mb" },
+    serverActions: { bodySizeLimit: "4.5mb" },
   },
   turbopack: {
     rules: {

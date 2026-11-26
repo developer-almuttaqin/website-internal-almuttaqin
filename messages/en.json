@@ -91,7 +91,7 @@
     "note": "Note",
     "prev": "Previous",
     "next": "Next",
-    "fileHint": "Image or PDF, up to 5 MB",
+    "fileHint": "Image or PDF, up to 4 MB",
     "currentFile": "Saved file"
   },
   "fields": {
@@ -425,7 +425,7 @@
     "field": "Invalid value",
     "login": "Incorrect email or password.",
     "fileType": "Unsupported file type. Use an image or PDF.",
-    "fileSize": "The file is larger than 5 MB.",
+    "fileSize": "The file is larger than 4 MB.",
     "fileRequired": "Choose a file first.",
     "importType": "Use an .xlsx or .csv file.",
     "importEmpty": "No readable rows in this file.",

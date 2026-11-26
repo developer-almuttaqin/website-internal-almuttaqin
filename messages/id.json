@@ -91,7 +91,7 @@
     "note": "Catatan",
     "prev": "Sebelumnya",
     "next": "Berikutnya",
-    "fileHint": "Gambar atau PDF, maksimal 5 MB",
+    "fileHint": "Gambar atau PDF, maksimal 4 MB",
     "currentFile": "File tersimpan"
   },
   "fields": {
@@ -425,7 +425,7 @@
     "field": "Isian tidak valid",
     "login": "Email atau kata sandi salah.",
     "fileType": "Jenis file tidak didukung. Gunakan gambar atau PDF.",
-    "fileSize": "Ukuran file melebihi 5 MB.",
+    "fileSize": "Ukuran file melebihi 4 MB.",
     "fileRequired": "Pilih file terlebih dahulu.",
     "importType": "Gunakan file .xlsx atau .csv.",
     "importEmpty": "Tidak ada baris yang bisa dibaca dari file ini.",

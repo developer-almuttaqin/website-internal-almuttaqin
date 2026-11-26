@@ -91,7 +91,7 @@
     "note": "メモ",
     "prev": "前へ",
     "next": "次へ",
-    "fileHint": "画像または PDF、5 MB まで",
+    "fileHint": "画像または PDF、4 MB まで",
     "currentFile": "保存済みファイル"
   },
   "fields": {
@@ -425,7 +425,7 @@
     "field": "入力内容が正しくありません",
     "login": "メールアドレスまたはパスワードが違います。",
     "fileType": "対応していないファイル形式です。画像または PDF を使用してください。",
-    "fileSize": "ファイルサイズが 5 MB を超えています。",
+    "fileSize": "ファイルサイズが 4 MB を超えています。",
     "fileRequired": "先にファイルを選択してください。",
     "importType": ".xlsx または .csv ファイルを使用してください。",
     "importEmpty": "このファイルから読み取れる行がありません。",

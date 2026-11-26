@@ -10,7 +10,7 @@ import { findConflict, letterNumber, nextDue, placeholders, referenceCode, rende
 import { APPROVER, PAYER, canWrite } from "../permissions";
 import { pushBookingStatus, pushDonationStatus } from "../publicweb/sync";
 import { CASH_CATEGORIES } from "../resources";
-import { saveUpload } from "../storage";
+import { MAX_UPLOAD, saveUpload } from "../storage";
 import type { Db } from "../db";
 import type { Donation, Profile, StatementLine } from "../types";
 import { ActionError, createAction, type ActionResult } from "./core";
@@ -169,7 +169,7 @@ export const createLetter = createAction({ name: "letter.create", roles: ["sekre
 
 async function readTable(file: unknown): Promise<{ rows: Cell[][]; hash: string; name: string }> {
   if (!(file instanceof File) || file.size === 0) throw new ActionError("VALIDATION", "errors.fileRequired");
-  if (file.size > 5 * 1024 * 1024) throw new ActionError("VALIDATION", "errors.fileSize");
+  if (file.size > MAX_UPLOAD) throw new ActionError("VALIDATION", "errors.fileSize");
   const bytes = new Uint8Array(await file.arrayBuffer());
   const hash = createHash("sha256").update(bytes).digest("hex");
   let rows: Cell[][];

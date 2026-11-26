@@ -9,13 +9,14 @@ const ALLOWED: Record<string, string> = {
   "image/webp": "webp",
   "application/pdf": "pdf",
 };
-export const MAX_UPLOAD = 5 * 1024 * 1024;
+/** Di bawah batas isi permintaan Vercel (4,5 MB), supaya yang tampil pesan aplikasi, bukan galat platform. */
+export const MAX_UPLOAD = 4 * 1024 * 1024;
 export const BUCKET = "internal-files";
 const DEMO_DIR = path.join(process.cwd(), ".data", "uploads");
 
 export class UploadError extends Error {}
 
-/** Simpan bukti/foto (gambar atau PDF, maks. 5 MB) dan kembalikan path-nya; null bila tidak ada file. */
+/** Simpan bukti/foto (gambar atau PDF, maks. 4 MB) dan kembalikan path-nya; null bila tidak ada file. */
 export async function saveUpload(file: unknown, folder: string): Promise<string | null> {
   if (!(file instanceof File) || file.size === 0) return null;
   const ext = ALLOWED[file.type];
