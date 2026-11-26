@@ -27,6 +27,8 @@ export default async function PublicWebHub() {
   const rooms = canRead(role, "ruangan");
   const inbox = canRead(role, "kotakmasuk");
 
+  // Data internal dimulai lebih dulu dan dimuat bersamaan dengan data web publik.
+  const internal = Promise.all([rooms ? db.list("room_bookings") : [], finance ? db.list("donations") : []]);
   const summaries: Record<string, { text: string; warn?: boolean }> = {};
   let inboxNew = 0;
   let failed = false;
@@ -55,7 +57,7 @@ export default async function PublicWebHub() {
     }
   }
 
-  const [bookings, donations] = await Promise.all([rooms ? db.list("room_bookings") : [], finance ? db.list("donations") : []]);
+  const [bookings, donations] = await internal;
   const waitingBookings = bookings.filter((b) => b.source === "public" && b.status === "requested").length;
   const waitingDonations = donations.filter((d) => d.public_ref && d.status === "pending").length;
 
