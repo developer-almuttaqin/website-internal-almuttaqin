@@ -25,7 +25,9 @@ export async function proxy(request: NextRequest) {
         },
       },
     });
-    signedIn = Boolean((await supabase.auth.getUser()).data.user);
+    // getClaims memeriksa tanda tangan token (ES256) di server ini memakai kunci publik yang di-cache,
+    // tanpa bolak-balik ke Supabase Auth di setiap pindah halaman; token kedaluwarsa tetap diperbarui.
+    signedIn = Boolean((await supabase.auth.getClaims()).data?.claims?.sub);
   }
 
   // /setup hanya berguna sebelum ada pengurus; halamannya sendiri menutup diri setelah itu.

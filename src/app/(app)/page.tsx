@@ -55,7 +55,31 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const today = dateJst();
   const month = monthJst();
 
-  const [accounts, entries, bills, donations, expenses, bookings, rooms, events, issues] = await Promise.all([
+  // Dari database web publik: jadwal Jumat terdekat dan kiriman jamaah yang belum ditangani.
+  // Dimuat bersamaan dengan data internal supaya halaman tidak menunggu dua kali.
+  const friday = nextFriday(today);
+  const loadPublic = async (): Promise<{ ok: boolean; jumuah: PubRow | null; inboxNew: number }> => {
+    if (publicWebMode === "off") return { ok: false, jumuah: null, inboxNew: 0 };
+    try {
+      const store = publicStore();
+      const inbox = canRead(role, "kotakmasuk");
+      const [schedules, programs, suggestions, contacts] = await Promise.all([
+        store.list("jumuah_schedules", { date: friday }),
+        inbox && role !== "fasilitas" ? store.list("program_registrations", { status: "new" }) : [],
+        inbox && role !== "pendidikan" ? store.list("suggestions", { status: "new" }) : [],
+        inbox && (role === "direktur" || role === "sekretaris") ? store.list("contact_messages", { status: "new" }) : [],
+      ]);
+      return {
+        ok: true,
+        jumuah: schedules.find((j) => j.published) ?? null,
+        inboxNew: programs.length + (role === "fasilitas" ? suggestions.filter((x) => x.kind === "facility").length : suggestions.length) + contacts.length,
+      };
+    } catch {
+      return { ok: false, jumuah: null, inboxNew: 0 };
+    }
+  };
+
+  const [[accounts, entries, bills, donations, expenses, bookings, rooms, events, issues], pub] = await Promise.all([Promise.all([
     finance ? db.list("accounts") : [],
     finance ? db.list("cash_entries") : [],
     finance ? db.list("bills") : [],
@@ -65,7 +89,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     canRead(role, "ruangan") ? db.list("rooms") : [],
     db.list("events"),
     db.list("issues"),
-  ]);
+  ]), loadPublic()]);
 
   const balances = balancesByCurrency(accounts, entries);
   const now = monthTotals(entries, month);
@@ -83,27 +107,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const dayDiff = (date: string) => Math.round((Date.parse(date) - Date.parse(today)) / 86_400_000);
   const isDirector = role === "direktur";
 
-  // Dari database web publik: jadwal Jumat terdekat dan kiriman jamaah yang belum ditangani.
-  const friday = nextFriday(today);
-  let jumuah: PubRow | null = null;
-  let inboxNew = 0;
-  let publicOk = publicWebMode !== "off";
-  if (publicOk) {
-    try {
-      const store = publicStore();
-      const inbox = canRead(role, "kotakmasuk");
-      const [schedules, programs, suggestions, contacts] = await Promise.all([
-        store.list("jumuah_schedules", { date: friday }),
-        inbox && role !== "fasilitas" ? store.list("program_registrations", { status: "new" }) : [],
-        inbox && role !== "pendidikan" ? store.list("suggestions", { status: "new" }) : [],
-        inbox && (role === "direktur" || role === "sekretaris") ? store.list("contact_messages", { status: "new" }) : [],
-      ]);
-      jumuah = schedules.find((j) => j.published) ?? null;
-      inboxNew = programs.length + (role === "fasilitas" ? suggestions.filter((x) => x.kind === "facility").length : suggestions.length) + contacts.length;
-    } catch {
-      publicOk = false;
-    }
-  }
+  const { jumuah, inboxNew } = pub;
+  const publicOk = pub.ok;
   const quick = [...QUICK[role], ...QUICK_ALL];
 
   return (

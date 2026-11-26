@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { pickL10n } from "./publicweb/content";
 import { publicSiteUrl, publicStore, publicWebMode } from "./publicweb/store";
@@ -36,15 +37,29 @@ const ADDRESS: Record<string, string> = {
 
 const text = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : "");
 
-export const getMosqueInfo = cache(async (locale: string): Promise<MosqueInfo> => {
-  let stored: Record<string, unknown> = {};
-  if (publicWebMode !== "off") {
+/** Tag cache profil masjid; disegarkan saat menu Info & kontak masjid disimpan. */
+export const PROFILE_TAG = "public-profile";
+
+/**
+ * Profil dari database web publik, di-cache satu jam lintas permintaan. Tanpa ini setiap pindah
+ * halaman menunggu satu panggilan ke database web publik hanya untuk nama dan alamat di menu.
+ */
+const storedProfile = unstable_cache(
+  async (): Promise<Record<string, unknown>> => {
+    if (publicWebMode === "off") return {};
     try {
-      stored = (((await publicStore().list("site_settings", { key: "profile" }))[0]?.value ?? {}) as Record<string, unknown>) ?? {};
+      return (((await publicStore().list("site_settings", { key: "profile" }))[0]?.value ?? {}) as Record<string, unknown>) ?? {};
     } catch {
       // Web publik sedang tidak terjangkau: pakai nilai bawaan.
+      return {};
     }
-  }
+  },
+  ["public-profile"],
+  { revalidate: 3600, tags: [PROFILE_TAG] },
+);
+
+export const getMosqueInfo = cache(async (locale: string): Promise<MosqueInfo> => {
+  const stored = await storedProfile();
   return {
     name: pickL10n(stored.name, locale) || "Al Muttaqin Cultural Center",
     logoName: "Masjid Al Muttaqin Chiba",

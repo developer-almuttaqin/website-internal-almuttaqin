@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   experimental: {
     serverActions: { bodySizeLimit: "4.5mb" },
+    // Halaman yang baru dibuka disimpan 30 detik di peramban: kembali ke menu sebelumnya terasa seketika.
+    // Setiap penyimpanan (Server Action) tetap mengosongkan simpanan ini, jadi data sendiri selalu baru.
+    staleTimes: { dynamic: 30 },
   },
   turbopack: {
     rules: {

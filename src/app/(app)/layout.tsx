@@ -48,11 +48,10 @@ function Brand({ name, tagline }: { name: string; tagline: string }) {
 }
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
-  const user = await requireSession();
-  const t = await getTranslations();
-  const themeCookie = (await cookies()).get("acc_theme")?.value;
+  // Dimuat bersamaan, bukan berurutan: setiap pindah halaman menunggu yang paling lama saja.
+  const [user, t, cookieStore, mosque] = await Promise.all([requireSession(), getTranslations(), cookies(), getLocale().then(getMosqueInfo)]);
+  const themeCookie = cookieStore.get("acc_theme")?.value;
   const theme = themeCookie === "light" || themeCookie === "dark" ? themeCookie : "system";
-  const mosque = await getMosqueInfo(await getLocale());
   const brand = <Brand name={mosque.name} tagline={t("app.tagline")} />;
 
   return (

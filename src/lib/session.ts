@@ -14,8 +14,10 @@ export const THEME_COOKIE = "acc_theme";
 const authUserId = cache(async (): Promise<string | undefined> => {
   if (isDemo) return (await cookies()).get(DEMO_COOKIE)?.value;
   const sb = await supabaseServer();
-  const { data } = await sb.auth.getUser();
-  return data.user?.id;
+  // Verifikasi token secara lokal (lihat proxy.ts). Akun yang dinonaktifkan tetap tertolak karena
+  // getSession selalu membaca status aktif dari tabel profiles.
+  const { data } = await sb.auth.getClaims();
+  return data?.claims?.sub;
 });
 
 /** Pengurus yang sedang masuk; null bila belum login atau akun dinonaktifkan. */

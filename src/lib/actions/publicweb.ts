@@ -1,10 +1,12 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import en from "../../../messages/en.json";
 import id from "../../../messages/id.json";
 import ja from "../../../messages/ja.json";
 import { dateJst, jstLocalToIso, monthJst } from "../format";
+import { PROFILE_TAG } from "../mosque";
 import { canWrite } from "../permissions";
 import { fillL10n, monthlyStatement, pickL10n, transparencyData, uniqueSlug, type L10n } from "../publicweb/content";
 import { findSection, type PubField, type PubSection, type PubValues } from "../publicweb/sections";
@@ -127,6 +129,8 @@ const save = createAction(
 
     const savedId = String(saved?.id ?? saved?.key ?? section.source);
     await logPublicActivity(rowId || section.kind === "setting" ? "update" : "create", section.source, savedId, user.full_name);
+    // Nama, alamat, dan kontak di menu web internal dan kop surat ikut berubah seketika.
+    if (section.key === "profil") revalidateTag(PROFILE_TAG, { expire: 0 });
     const live = await refreshPublicSite(section.paths);
     return { id: savedId, live };
   },

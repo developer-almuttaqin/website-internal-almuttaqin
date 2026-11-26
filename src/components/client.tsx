@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { Globe, Loader2, LogOut, Menu, Moon, Printer, Sun, SunMoon, X } from "lucide-react";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, useTransition, type ReactNode } from "react";
@@ -25,8 +25,15 @@ export function NavLink({ href, children }: { href: string; children: ReactNode 
       )}
     >
       {children}
+      <NavPending />
     </Link>
   );
+}
+
+/** Penanda kecil di menu yang baru diklik, selama halaman tujuannya dimuat. */
+function NavPending() {
+  const { pending } = useLinkStatus();
+  return pending ? <Loader2 aria-hidden className="ml-auto size-3.5 shrink-0 animate-spin text-muted" /> : null;
 }
 
 /** Di HP, sidebar menjadi drawer; tertutup otomatis saat berpindah halaman. */

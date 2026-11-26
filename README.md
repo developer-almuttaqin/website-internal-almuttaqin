@@ -58,6 +58,14 @@ Bila kunci web publik dikosongkan, menu Web Publik menampilkan petunjuk penyambu
    (memakai `SETUP_CODE`). Akun pengurus lain ditambahkan direktur dari menu Pengguna; setiap pengurus
    bisa mengganti kata sandinya sendiri di menu Akun saya.
 
+### Deploy di Vercel
+
+Proyek Vercel `website-internal-almuttaqin`; variabel lingkungan diimpor dari berkas `.env` yang sama
+dengan `.env.local`. Wilayah fungsi di `vercel.json` harus sama dengan wilayah proyek Supabase internal
+(saat ini Sydney, `syd1`): setiap halaman melakukan beberapa panggilan database berurutan, jadi jarak
+server ke database jauh lebih menentukan kecepatan daripada jarak pengguna ke server. Bila proyek
+Supabase internal dipindah ke wilayah lain, ubah `regions` ikut menyesuaikan.
+
 Migration diuji terhadap Postgres sungguhan lewat PGlite (`tests/migration.test.ts`): skema terpasang,
 semua tabel memakai RLS, dan aturan peran utama (hanya direktur menyetujui, bendahara membayar,
 pembimbing hanya melihat dampingannya, pengunjung tanpa sesi tidak bisa membaca apa pun).
